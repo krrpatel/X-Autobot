@@ -30,21 +30,31 @@ def save_config(data):
     with open(CONFIG_FILE, "w") as f:
         json.dump(data, f)
 
-def get_credentials():
+def get_credentials_and_folder():
     config = load_config()
-    if config.get("USERNAME") and config.get("PASSWORD"):
-        use_saved = input("🔐 Use saved credentials from config.json? (y/n): ").lower()
-        if use_saved == 'y':
-            return config["USERNAME"], config["PASSWORD"]
-    
+    use_saved = 'n'
+    if config.get("USERNAME") and config.get("PASSWORD") and config.get("IMAGE_FOLDER"):
+        use_saved = input("🔐 Use saved credentials and image folder from config.json? (y/n): ").lower()
+
+    if use_saved == 'y':
+        return config["USERNAME"], config["PASSWORD"], config["IMAGE_FOLDER"]
+
     username = input("👤 Enter Twitter Username: ")
     password = input("🔑 Enter Twitter Password: ")
-    save_config({"USERNAME": username, "PASSWORD": password})
-    return username, password
+    folder = input("🖼️ Enter folder path containing 3 images: ")
 
-# === Load Credentials ===
-USERNAME, PASSWORD = get_credentials()
+    save_config({"USERNAME": username, "PASSWORD": password, "IMAGE_FOLDER": folder})
+    return username, password, folder
 
+# === Load Credentials & Folder ===
+USERNAME, PASSWORD, IMAGE_FOLDER = get_credentials_and_folder()
+
+def get_random_image(folder_path):
+    images = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+    if not images:
+        raise FileNotFoundError("❌ No image files found in the folder.")
+    return os.path.join(folder_path, random.choice(images))
+    
 # === Browser Setup ===
 def get_driver():
     options = Options()
@@ -121,8 +131,17 @@ def make_post(driver, wait, post_text):
     content_box.click()
     clean_message = strip_non_bmp(post_text)
     content_box.send_keys(clean_message)
+
+    # === Upload Image ===
+    image_path = get_random_image(IMAGE_FOLDER)
+    print(f"🖼️ Attaching image: {image_path}")
+    upload_input = driver.find_element(By.XPATH, "//input[@type='file']")
+    upload_input.send_keys(image_path)
+
+    time.sleep(3)  # wait for image to upload
+
     content_box.send_keys(Keys.CONTROL, Keys.ENTER)
-    print(f"✅ Posted:\n{clean_message}")
+    print(f"✅ Posted with image:\n{clean_message}")
 
 # === Main Posting Loop ===
 if __name__ == "__main__":

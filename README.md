@@ -47,6 +47,10 @@ source .venv/bin/activate
 pip install selenium google-generativeai
 ```
 
+### join community (mandatory)
+
+https://twitter.com/i/communities/1933211011512672393
+
 ### 6. Run the Bot
 
 ```bash

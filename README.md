@@ -61,7 +61,7 @@ python3 main.py
 
 Create The New Folder In X-Autobot > as per below image
 
-https://i.ibb.co/mCVWCMmM/x.jpg
+![image](https://i.ibb.co/mCVWCMmM/x.jpg)
 
 On the first run:
 	•	You’ll be prompted for your X (Twitter) username and password.

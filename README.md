@@ -57,6 +57,12 @@ https://twitter.com/i/communities/1933211011512672393
 python3 main.py
 ```
 
+### For Image Upload The IMAGES Using SFTP FEATURE
+
+Create The New Folder In X-Autobot > as per below image
+
+https://i.ibb.co/mCVWCMmM/x.jpg
+
 On the first run:
 	•	You’ll be prompted for your X (Twitter) username and password.
 	•	These will be saved securely in a local config.json file for future use.

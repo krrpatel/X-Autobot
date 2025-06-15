@@ -53,7 +53,9 @@ def get_random_image(folder_path):
     images = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
     if not images:
         raise FileNotFoundError("❌ No image files found in the folder.")
-    return os.path.join(folder_path, random.choice(images))
+    random_image = random.choice(images)
+    abs_path = os.path.abspath(os.path.join(folder_path, random_image))
+    return abs_path
     
 # === Browser Setup ===
 def get_driver():

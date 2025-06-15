@@ -11,7 +11,7 @@ import google.generativeai as genai
 # === CONFIG ===
 COOKIES_FILE = "x_cookies.json"
 COMMUNITY_NAME = "Crypto Bhavesh Kaito Community"
-POST_INTERVAL = 3600  # Every 1 hour
+POST_INTERVAL = 10800  # Every 1 hour
 
 # === OpenAI API Setup ===
 genai.configure(api_key="AIzaSyAMuMRYCDdZtKTKYXCo5vabC8XIGb1YTRo")  # or use os.getenv("GEMINI_API_KEY")

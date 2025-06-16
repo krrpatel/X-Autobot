@@ -148,8 +148,7 @@ def make_post(driver, wait, post_text):
 
 # === Main Posting Loop ===
 if __name__ == "__main__":
-    print("💡 Enter AI prompt for tweet generation (used every hour),(Ctrl+D or Ctrl+Z to end): ")
-    ai_prompt = sys.stdin.read()
+    ai_prompt = input("💡 Enter AI prompt for tweet generation (used every hour): ")
     while True:
         driver = get_driver()
         wait = WebDriverWait(driver, 30)

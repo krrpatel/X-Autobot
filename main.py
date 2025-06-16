@@ -8,6 +8,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
 import google.generativeai as genai
 import openai
+import tempfile
+import shutil
 
 # === CONFIG ===
 COOKIES_FILE = "x_cookies.json"
@@ -64,12 +66,28 @@ def get_random_image(folder_path):
 # === Browser Setup ===
 def get_driver():
     options = Options()
-    options.add_argument("--headless=new")
+    options.add_argument("--headless=new")  # for newer Chrome
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    return webdriver.Chrome(options=options)
+    options.add_argument("--disable-gpu")
+    options.add_argument("--window-size=1920,1080")
 
+    # Optional: use isolated user-data-dir to avoid conflicts
+    user_data_dir = tempfile.mkdtemp()
+    options.add_argument(f"--user-data-dir={user_data_dir}")
+
+    driver = webdriver.Chrome(options=options)
+
+    # Clean up temp profile
+    def cleanup():
+        try:
+            shutil.rmtree(user_data_dir)
+        except Exception as e:
+            print(f"⚠️ Failed to clean profile dir: {e}")
+    driver.cleanup = cleanup
+
+    return driver
+    
 def save_cookies(driver):
     with open(COOKIES_FILE, "w") as f:
         json.dump(driver.get_cookies(), f)

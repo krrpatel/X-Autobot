@@ -176,8 +176,10 @@ def make_post(driver, wait, post_text):
 
     time.sleep(3)  # wait for image to upload
 
+    driver.save_screenshot(“beforetweet_page.png”)
     content_box.send_keys(Keys.CONTROL, Keys.ENTER)
     print(f"✅ Posted with image:\n{clean_message}")
+    driver.save_screenshot(“afterpost_page.png”)
 
 # === Main Posting Loop ===
 if __name__ == "__main__":

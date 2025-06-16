@@ -102,6 +102,7 @@ def login_and_save(driver, wait):
         otp_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "text")))
         otp_code = input("📨 Enter OTP: ")
         otp_field.send_keys(otp_code)
+        driver.save_screenshot("screenshot.png")
         driver.find_element(By.XPATH, "//span[text()='Next']").click()
     except TimeoutException:
         pass

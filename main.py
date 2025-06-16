@@ -1,4 +1,5 @@
 import os, json, time, random
+import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -147,8 +148,8 @@ def make_post(driver, wait, post_text):
 
 # === Main Posting Loop ===
 if __name__ == "__main__":
-    ai_prompt = input("💡 Enter AI prompt for tweet generation (used every hour): ")
-
+    print("💡 Enter AI prompt for tweet generation (used every hour),(Ctrl+D or Ctrl+Z to end): ")
+    ai_prompt = sys.stdin.read()
     while True:
         driver = get_driver()
         wait = WebDriverWait(driver, 30)

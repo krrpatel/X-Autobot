@@ -160,8 +160,12 @@ def strip_non_bmp(text):
 
 def make_post(driver, wait, post_text):
     driver.get("https://x.com/compose/post")
-    audience_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@aria-label='Choose audience']")))
-    audience_btn.click()
+    audience_btn = wait.until(EC.presence_of_element_located((By.XPATH, "//button[@aria-label='Choose audience']")))
+    try:
+       audience_btn.click()
+    except ElementClickInterceptedException:
+       print("⚠️ Audience button was blocked — using JS click instead")
+       driver.execute_script("arguments[0].click();", audience_btn)
     time.sleep(2)
 
     community_option = wait.until(EC.element_to_be_clickable((By.XPATH, f"//span[text()='{COMMUNITY_NAME}']")))

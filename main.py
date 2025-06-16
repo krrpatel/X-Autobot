@@ -20,7 +20,7 @@ genai.configure(api_key="AIzaSyAMuMRYCDdZtKTKYXCo5vabC8XIGb1YTRo")  # or use os.
 model = genai.GenerativeModel("gemini-2.0-flash")
 
 # === OpenAI API Key ===
-openai.api_key = "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"
+openai.api_key = "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"
 
 CONFIG_FILE = "config.json"
 

@@ -61,10 +61,12 @@ def get_random_image(folder_path):
 # === Browser Setup ===
 def get_driver():
     options = Options()
-    options.add_argument("--headless=new")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("--headless")  # headless mode
+    options.add_argument("--no-sandbox")  # needed for root/VPS
+    options.add_argument("--disable-dev-shm-usage")  # fixes /dev/shm issues
+    options.add_argument("--disable-gpu")  # safe for headless
+    options.add_argument("--remote-debugging-port=9222")  # prevents DevToolsActivePort issue
+
     return webdriver.Chrome(options=options)
 
 def save_cookies(driver):

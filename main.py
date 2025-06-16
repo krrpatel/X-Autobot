@@ -10,6 +10,7 @@ import google.generativeai as genai
 import openai
 import tempfile
 import shutil
+random.seed(time.time())
 
 # === CONFIG ===
 COOKIES_FILE = "x_cookies.json"
@@ -55,13 +56,23 @@ def get_credentials_and_folder():
 # === Load Credentials & Folder ===
 USERNAME, PASSWORD, IMAGE_FOLDER = get_credentials_and_folder()
 
+last_image_used = None  # Global tracker
+
 def get_random_image(folder_path):
+    global last_image_used
     images = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
     if not images:
         raise FileNotFoundError("❌ No image files found in the folder.")
-    random_image = random.choice(images)
-    abs_path = os.path.abspath(os.path.join(folder_path, random_image))
-    return abs_path
+
+    if len(images) == 1:
+        return os.path.abspath(os.path.join(folder_path, images[0]))
+
+    # Remove the last image from the selection list
+    available_images = [img for img in images if img != last_image_used]
+    selected = random.choice(available_images)
+    last_image_used = selected
+    print(f"🎲 Selected image: {selected}")
+    return os.path.abspath(os.path.join(folder_path, selected))
     
 # === Browser Setup ===
 def get_driver():

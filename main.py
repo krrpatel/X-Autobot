@@ -1,5 +1,4 @@
 import os, json, time, random
-import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -8,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
 import google.generativeai as genai
+import openai
 
 # === CONFIG ===
 COOKIES_FILE = "x_cookies.json"
@@ -18,6 +18,9 @@ POST_INTERVAL = 10800  # Every 1 hour
 genai.configure(api_key="AIzaSyAMuMRYCDdZtKTKYXCo5vabC8XIGb1YTRo")  # or use os.getenv("GEMINI_API_KEY")
 
 model = genai.GenerativeModel("gemini-2.0-flash")
+
+# === OpenAI API Key ===
+openai.api_key = "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"
 
 CONFIG_FILE = "config.json"
 
@@ -61,12 +64,10 @@ def get_random_image(folder_path):
 # === Browser Setup ===
 def get_driver():
     options = Options()
-    options.add_argument("--headless")  # headless mode
-    options.add_argument("--no-sandbox")  # needed for root/VPS
-    options.add_argument("--disable-dev-shm-usage")  # fixes /dev/shm issues
-    options.add_argument("--disable-gpu")  # safe for headless
-    options.add_argument("--remote-debugging-port=9222")  # prevents DevToolsActivePort issue
-
+    options.add_argument("--headless=new")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-blink-features=AutomationControlled")
     return webdriver.Chrome(options=options)
 
 def save_cookies(driver):
@@ -102,7 +103,6 @@ def login_and_save(driver, wait):
         otp_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "text")))
         otp_code = input("📨 Enter OTP: ")
         otp_field.send_keys(otp_code)
-        driver.save_screenshot("screenshot.png")
         driver.find_element(By.XPATH, "//span[text()='Next']").click()
     except TimeoutException:
         pass
@@ -114,9 +114,17 @@ def login_and_save(driver, wait):
     except TimeoutException:
         return False
 
-def generate_post(ai_prompt):
-    response = model.generate_content(ai_prompt)
-    return response.text.strip()
+def generate_post(user_prompt):
+    response = openai.ChatCompletion.create(
+        model="gpt-4o-mini",  # You can change to gpt-4 or gpt-3.5-turbo
+        messages=[
+            {"role": "system", "content": "You are a helpful and concise Web3 social media copywriter."},
+            {"role": "user", "content": user_prompt}
+        ],
+        temperature=0.9,
+        max_tokens=300
+    )
+    return response['choices'][0]['message']['content'].strip()
 
 def strip_non_bmp(text):
     return ''.join(c for c in text if ord(c) <= 0xFFFF)
@@ -151,7 +159,7 @@ def make_post(driver, wait, post_text):
 
 # === Main Posting Loop ===
 if __name__ == "__main__":
-    ai_prompt = input("💡 Enter AI prompt for tweet generation (used every hour): ")
+    ai_prompt = input("enter Ai prompt without space")
     while True:
         driver = get_driver()
         wait = WebDriverWait(driver, 30)

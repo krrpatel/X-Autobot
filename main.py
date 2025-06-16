@@ -196,7 +196,9 @@ if __name__ == "__main__":
         except Exception as e:
             print("❌ Error:", str(e))
         finally:
-            driver.quit()
+           driver.quit()
+           if hasattr(driver, "cleanup"):
+              driver.cleanup()
 
         print(f"⏳ Sleeping for {POST_INTERVAL // 60} minutes...")
         time.sleep(POST_INTERVAL)
